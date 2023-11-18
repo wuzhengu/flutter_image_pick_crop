@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:image_pick_crop/core.dart';
+import 'package:image_pick_crop/l10n.dart';
+import 'package:image_pick_crop/localizations.dart';
 
 main() {
   runApp(MaterialApp(
     theme: ThemeData.light(),
     darkTheme: ThemeData.dark(),
     localizationsDelegates: const [
+      ImagePickCropLocalizationsDelegate(),
       GlobalWidgetsLocalizations.delegate,
       GlobalMaterialLocalizations.delegate,
       GlobalCupertinoLocalizations.delegate,
@@ -56,7 +59,7 @@ class HomePageState extends State<HomePage> {
                   );
                   setState(() {});
                 },
-                child: Text("Pick Image"),
+                child: Text("Pick Image".l10n()),
               ),
               SizedBox(height: 10),
               Text("$path"),

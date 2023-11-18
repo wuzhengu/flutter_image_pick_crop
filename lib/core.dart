@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
+import 'l10n.dart';
+
 ///选取图片
 ///
 ///[picker]
@@ -30,8 +32,8 @@ Future<String?> pickImage(
     source = ImageSource.camera;
   } else {
     var entries = {
-      "Open gallery": ImageSource.gallery,
-      "Open camera": ImageSource.camera,
+      "Open gallery".l10n(): ImageSource.gallery,
+      "Open camera".l10n(): ImageSource.camera,
     }.entries;
     source = await showDialog(
       context: context,
@@ -39,7 +41,7 @@ Future<String?> pickImage(
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(title ?? "Pick Image", style: Theme.of(context).textTheme.titleMedium),
+            Text(title ?? "Pick Image".l10n(), style: Theme.of(context).textTheme.titleMedium),
             SizedBox(height: 10),
             ...entries.map((e) {
               return Container(
@@ -102,6 +104,15 @@ Future<String?> cropImage(
           enableResize: true,
           enableZoom: true,
           presentStyle: CropperPresentStyle.page,
+          translations: [WebTranslations.en()].map((e) {
+            return WebTranslations(
+              title: e.title.l10n(),
+              rotateLeftTooltip: e.rotateLeftTooltip.l10n(),
+              rotateRightTooltip: e.rotateRightTooltip.l10n(),
+              cancelButton: e.cancelButton.l10n(),
+              cropButton: e.cropButton.l10n(),
+            );
+          }).first,
         ),
       ],
     );
