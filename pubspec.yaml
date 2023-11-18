@@ -1,4 +1,4 @@
-name: my_app
+name: image_pick_crop
 
 # publish_to: 'none'
 
@@ -12,6 +12,9 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.2
+
+  image_picker: any
+  image_cropper: any
 
 dev_dependencies:
   flutter_test:
