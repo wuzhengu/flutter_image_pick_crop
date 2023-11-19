@@ -1,8 +1,16 @@
+import 'dart:async';
+import 'dart:io';
+import 'dart:math';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'l10n.dart';
+import 'src/image_util.dart';
+
+ImageUtil get imageUtil => ImageUtil.instance;
 
 ///选取图片
 ///
@@ -86,9 +94,51 @@ Future<String?> cropImage(
 }) async {
   if (path == null) return null;
 
+  Rect? cropRect;
   Rect? scaleRect;
 
+  if (ratio > 0 || resolution > 0) {
+    ImageProvider provider;
+    if (path.startsWith(RegExp(r'\w+:'))) {
+      provider = NetworkImage(path);
+    } else {
+      provider = FileImage(File(path));
+    }
+    var image = await imageUtil.resolveImage(provider);
+    if (image == null) return null;
+
+    var width = image.width;
+    var height = image.height;
+
+    if (ratio > 0) {
+      var width2 = height * ratio;
+      if (width >= width2) {
+        width = width2; //调整width，以匹配ratio
+      } else {
+        height = width / ratio; //调整height，以匹配ratio
+      }
+
+      cropRect = Rect.fromLTWH(0, 0, width, height);
+      cropRect = cropRect.translate((image.width - width) / 2, (image.height - height) / 2);
+    }
+
+    if (resolution > 0) {
+      //等比缩放
+      var scale = min(width, height) / resolution;
+      if (scale > 1) {
+        width /= scale;
+        height /= scale;
+
+        scaleRect = Rect.fromLTWH(0, 0, width, height);
+      }
+    }
+
+    if (width >= image.width && height >= image.height) return path;
+  }
+
   if (cropper == true) {
+    var rect = scaleRect ?? cropRect; //编辑框尺寸，针对web
+
     //修剪图片
     var cropImage = await ImageCropper().cropImage(
       sourcePath: path,
@@ -100,8 +150,27 @@ Future<String?> cropImage(
           hideBottomControls: ratio > 0,
         ),
         WebUiSettings(
-          context: context,
-          enableResize: true,
+          context: true ? context : context,
+          boundary: CroppieBoundary(
+            width: 400,
+            height: 400,
+          ),
+          viewPort: (() {
+            if (rect == null) return null;
+
+            var width = rect.width;
+            var height = rect.height;
+            var scale = max(width, height) / 360;
+            if (scale > 1) {
+              width /= scale;
+              height /= scale;
+            }
+            return CroppieViewPort(
+              width: width.round(),
+              height: height.round(),
+            );
+          })(),
+          enableResize: rect == null,
           enableZoom: true,
           presentStyle: CropperPresentStyle.page,
           translations: [WebTranslations.en()].map((e) {
@@ -116,7 +185,7 @@ Future<String?> cropImage(
         ),
       ],
     );
-    // if (!kIsWeb) File(path).delete();
+    if (!kIsWeb) File(path).delete();
     path = cropImage?.path;
   }
 

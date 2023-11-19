@@ -47,15 +47,10 @@ class HomePageState extends State<HomePage> {
                 onPressed: () async {
                   path = await pickImage(
                     context,
-                    cropper: true,
-                  );
-                  setState(() {});
-                },
-                onLongPress: () async {
-                  path = await pickImage(
-                    context,
                     picker: 1,
                     cropper: true,
+                    ratio: 2 / 3,
+                    resolution: 720,
                   );
                   setState(() {});
                 },
@@ -63,7 +58,14 @@ class HomePageState extends State<HomePage> {
               ),
               SizedBox(height: 10),
               Text("$path"),
-              if (path?.isNotEmpty == true) Image.network(path!),
+              SizedBox(height: 10),
+              if (path?.isNotEmpty == true)
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Theme.of(context).colorScheme.primary),
+                  ),
+                  child: Image.network(path!),
+                ),
             ],
           ),
         ),
