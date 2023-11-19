@@ -16,6 +16,8 @@ dependencies:
   image_picker: any
   image_cropper: any
 
+  flutter_native_image: any
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -2,10 +2,23 @@ import 'dart:async';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
+import 'image_util.mobile.dart';
+import 'image_util.web.dart';
+
 class ImageUtil {
-  static ImageUtil instance = ImageUtil();
+  static ImageUtil instance = kIsWeb ? ImageUtilOfWeb() : ImageUtilOfMobile();
+
+  ///裁剪、缩放图片
+  Future<String?> resizeImage(
+    String? path,
+    Rect? cropRect,
+    Rect? scaleRect,
+  ) async {
+    return null;
+  }
 
   ///解析图片
   Future<ImageInfo2?> resolveImage(

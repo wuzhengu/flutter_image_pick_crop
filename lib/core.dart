@@ -187,6 +187,9 @@ Future<String?> cropImage(
     );
     if (!kIsWeb) File(path).delete();
     path = cropImage?.path;
+  } else {
+    //自动裁剪及缩放
+    path = await imageUtil.resizeImage(path, cropRect, scaleRect);
   }
 
   return path;
