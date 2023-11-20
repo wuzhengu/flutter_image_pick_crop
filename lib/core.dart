@@ -72,6 +72,8 @@ Future<String?> pickImage(
   var path = pickImage?.path;
   if (path == null) return null;
 
+  if(kIsWeb) path = "$path#${pickImage!.name}";
+
   path = await cropImage(context, path, cropper: cropper, ratio: ratio, resolution: resolution);
 
   return path;
