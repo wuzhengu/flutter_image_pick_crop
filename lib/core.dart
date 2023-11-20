@@ -152,7 +152,7 @@ Future<String?> cropImage(
           hideBottomControls: ratio > 0,
         ),
         WebUiSettings(
-          context: true ? context : context,
+          context: 1 == 1 ? context : context,
           boundary: CroppieBoundary(
             width: 400,
             height: 400,
