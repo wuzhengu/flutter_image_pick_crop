@@ -3,7 +3,7 @@ import 'dart:ui';
 
 import 'image_util.dart';
 
-class ImageUtilOfWeb extends ImageUtil {
+class ImageUtilImpl extends ImageUtil {
   @override
   Future<String?> resizeImage(
     String? path,

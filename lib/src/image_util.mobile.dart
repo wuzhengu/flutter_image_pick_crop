@@ -5,7 +5,7 @@ import 'package:flutter_native_image/flutter_native_image.dart';
 
 import 'image_util.dart';
 
-class ImageUtilOfMobile extends ImageUtil {
+class ImageUtilImpl extends ImageUtil {
   @override
   Future<String?> resizeImage(
     String? path,

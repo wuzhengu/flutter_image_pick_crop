@@ -2,14 +2,12 @@ import 'dart:async';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import 'image_util.mobile.dart';
-import 'image_util.web.dart';
+import 'image_util.mobile.dart' if (dart.library.html) 'image_util.web.dart';
 
 class ImageUtil {
-  static ImageUtil instance = kIsWeb ? ImageUtilOfWeb() : ImageUtilOfMobile();
+  static ImageUtil instance = ImageUtilImpl();
 
   ///裁剪、缩放图片
   Future<String?> resizeImage(
