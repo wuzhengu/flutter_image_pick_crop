@@ -2,7 +2,7 @@ name: image_pick_crop
 description: ''
 repository: 'https://github.com/wuzhengu/flutter_image_pick_crop'
 
-version: 1.0.0
+version: 1.0.1
 
 environment:
   sdk: '>=2.19.3 <4.0.0'
