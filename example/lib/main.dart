@@ -34,6 +34,7 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
+  var log = [];
   String? path = '';
 
   var editControllers = [
@@ -45,79 +46,86 @@ class HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Container(
-          margin: EdgeInsets.all(10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: List.generate(3, (index) {
-                  if (index < editControllers.length) {
-                    return Expanded(
-                      child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 5),
-                        child: TextField(
-                          controller: editControllers[index],
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            isDense: true,
-                            hintText: index == 0 ? "ratio" : "resolution",
-                          ),
+        child: ListView(
+          padding: EdgeInsets.all(10),
+          children: [
+            Row(
+              children: List.generate(3, (index) {
+                if (index < editControllers.length) {
+                  return Expanded(
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 5),
+                      child: TextField(
+                        controller: editControllers[index],
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          isDense: true,
+                          hintText: index == 0 ? "ratio" : "resolution",
                         ),
                       ),
-                    );
-                  }
-
-                  onPressed([bool longPressed = false]) async {
-                    var nums = editControllers.map((e) {
-                      try {
-                        return double.parse(e.text.trim());
-                      } catch (_) {}
-                      return 0.0;
-                    }).toList();
-                    path = await pickImage(
-                      context,
-                      picker: !longPressed ? 0 : 1,
-                      cropper: !longPressed,
-                      ratio: nums[0],
-                      resolution: nums[1],
-                    );
-                    setState(() {});
-                  }
-
-                  return ElevatedButton(
-                    onPressed: onPressed,
-                    onLongPress: () => onPressed(true),
-                    child: Text("Pick Image".l10n()),
+                    ),
                   );
-                }).toList(),
-              ),
-              SizedBox(height: 10),
-              TextField(
+                }
+
+                onPressed([bool longPressed = false]) async {
+                  var nums = editControllers.map((e) {
+                    try {
+                      return double.parse(e.text.trim());
+                    } catch (_) {}
+                    return 0.0;
+                  }).toList();
+                  var path = await pickImage(
+                    context,
+                    picker: !longPressed ? 0 : 1,
+                    cropper: !longPressed,
+                    ratio: nums[0],
+                    resolution: nums[1],
+                  );
+                  if (path == null) return;
+
+                  this.path = path;
+                  log.clear();
+                  log.add(path.length > 1000 ? path.substring(0, 1000) : path);
+                  setState(() {});
+                }
+
+                return ElevatedButton(
+                  onPressed: onPressed,
+                  onLongPress: () => onPressed(true),
+                  child: Text("Pick Image".l10n()),
+                );
+              }).toList(),
+            ),
+            Container(
+              constraints: BoxConstraints(maxHeight: 300),
+              child: TextField(
                 controller: TextEditingController(
-                  text: [path ?? ""].map((e) => e.length > 1000 ? e.substring(0, 1000) : e).first,
+                  text: log.join("\n"),
                 ),
+                maxLines: null,
                 decoration: InputDecoration(
                   contentPadding: EdgeInsets.all(10),
                   isDense: true,
                 ),
               ),
-              SizedBox(height: 10),
-              for (var path = this.path; path != null && path.isNotEmpty; path = null)
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Theme.of(context).colorScheme.primary),
-                      ),
-                      child: path.startsWith(RegExp(r'\w+:'))
-                          ? Image.network(path)
-                          : Image.file(File(path)),
-                    ),
-                  ),
+            ),
+            [path].map((path) {
+              if (path == null || path.isEmpty) return SizedBox();
+
+              return Container(
+                margin: EdgeInsets.only(top: 10),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Theme.of(context).colorScheme.primary),
                 ),
-            ],
-          ),
+                child: (() {
+                  if (path.startsWith(RegExp(r'\w+:'))) {
+                    return Image.network(path);
+                  }
+                  return Image.file(File(path));
+                })(),
+              );
+            }).first,
+          ],
         ),
       ),
     );

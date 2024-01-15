@@ -7,7 +7,7 @@ import 'package:flutter/widgets.dart';
 import 'image_util.mobile.dart' if (dart.library.html) 'image_util.web.dart';
 
 class ImageUtil {
-  static ImageUtil instance = ImageUtilImpl();
+  static ImageUtil impl = ImageUtilImpl();
 
   ///裁剪、缩放图片
   Future<String?> resizeImage(

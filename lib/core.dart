@@ -10,7 +10,7 @@ import 'package:image_picker/image_picker.dart';
 import 'l10n.dart';
 import 'src/image_util.dart';
 
-ImageUtil get imageUtil => ImageUtil.instance;
+export 'package:image_picker/image_picker.dart';
 
 ///选取图片
 ///
@@ -72,7 +72,7 @@ Future<String?> pickImage(
   var path = pickImage?.path;
   if (path == null) return null;
 
-  if(kIsWeb) path = "$path#${pickImage!.name}";
+  if (kIsWeb) path = "$path#${pickImage!.name}";
 
   path = await cropImage(context, path, cropper: cropper, ratio: ratio, resolution: resolution);
 
@@ -106,7 +106,7 @@ Future<String?> cropImage(
     } else {
       provider = FileImage(File(path));
     }
-    var image = await imageUtil.resolveImage(provider);
+    var image = await ImageUtil.impl.resolveImage(provider);
     if (image == null) return null;
 
     var width = image.width;
@@ -191,7 +191,7 @@ Future<String?> cropImage(
     path = cropImage?.path;
   } else {
     //自动裁剪及缩放
-    path = await imageUtil.resizeImage(path, cropRect, scaleRect);
+    path = await ImageUtil.impl.resizeImage(path, cropRect, scaleRect);
   }
 
   return path;

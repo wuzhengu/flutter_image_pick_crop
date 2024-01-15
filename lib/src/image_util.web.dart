@@ -12,11 +12,11 @@ class ImageUtilImpl extends ImageUtil {
   ) async {
     if (path == null) return null;
 
-    var src = ImageElement(src: path);
-    await src.onLoad.first;
+    var img = ImageElement(src: path);
+    await img.onLoad.first;
 
-    var width = src.width;
-    var height = src.height;
+    var width = img.width;
+    var height = img.height;
     if (width == null || height == null) return null;
 
     var dstRect = scaleRect ?? cropRect;
@@ -27,9 +27,9 @@ class ImageUtilImpl extends ImageUtil {
     var canvas = CanvasElement(width: width, height: height);
     if (cropRect != null) {
       canvas.context2D.drawImageScaledFromSource(
-          src, cropRect.left, cropRect.top, cropRect.width, cropRect.height, 0, 0, width, height);
+          img, cropRect.left, cropRect.top, cropRect.width, cropRect.height, 0, 0, width, height);
     } else {
-      canvas.context2D.drawImageScaled(src, 0, 0, width, height);
+      canvas.context2D.drawImageScaled(img, 0, 0, width, height);
     }
 
     var index = path.lastIndexOf("#");
