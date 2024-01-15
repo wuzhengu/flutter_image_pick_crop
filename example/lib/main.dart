@@ -1,10 +1,13 @@
 import 'dart:io';
+import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:image_pick_crop/core.dart';
 import 'package:image_pick_crop/l10n.dart';
 import 'package:image_pick_crop/localizations.dart';
+import 'package:video_compress/video_compress.dart';
 
 main() {
   runApp(MaterialApp(
@@ -35,6 +38,7 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
   var log = [];
+  var videoCompress = 0;
   String? path = '';
 
   var editControllers = [
@@ -96,6 +100,61 @@ class HomePageState extends State<HomePage> {
                 );
               }).toList(),
             ),
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      isDense: true,
+                      hintText: "Compress level",
+                    ),
+                    onChanged: (value) {
+                      videoCompress = int.tryParse(value.trim()) ?? 0;
+                    },
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    var res = await ImagePicker().pickVideo(source: ImageSource.gallery);
+                    if (res == null) return;
+                    var path = res.path;
+                    num length = await res.length();
+
+                    log.clear();
+                    log.add(path.length > 1000 ? path.substring(0, 1000) : path);
+                    log.add("${(length / 1024 / 1024 * 10).round() / 10}MB");
+                    setState(() {});
+
+                    if (kIsWeb) {
+                      path += "#${res.name}";
+                    } else if (videoCompress >= 0) {
+                      var quality = VideoQuality.values[min(videoCompress, 3)];
+                      log.add("");
+                      log.add("Compress to ${quality.name} ...");
+                      setState(() {});
+
+                      var res = await VideoCompress.compressVideo(
+                        path,
+                        quality: quality,
+                      );
+                      if (res == null || res.path == null) return;
+                      path = res.path!;
+                      length = res.filesize ?? 0;
+
+                      log.add("");
+                      log.add(path);
+                      log.add("${(length / 1024 / 1024 * 10).round() / 10}MB");
+                      setState(() {});
+                    }
+
+                    this.path = path;
+                    setState(() {});
+                  },
+                  child: Text("Pick Video".l10n()),
+                ),
+              ],
+            ),
             Container(
               constraints: BoxConstraints(maxHeight: 300),
               child: TextField(
@@ -111,6 +170,8 @@ class HomePageState extends State<HomePage> {
             ),
             [path].map((path) {
               if (path == null || path.isEmpty) return SizedBox();
+
+              if (path.endsWith(".mp4")) return SizedBox();
 
               return Container(
                 margin: EdgeInsets.only(top: 10),

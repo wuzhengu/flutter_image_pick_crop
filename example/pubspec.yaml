@@ -17,6 +17,8 @@ dependencies:
   image_pick_crop:
     path: ../
 
+  video_compress: any
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
