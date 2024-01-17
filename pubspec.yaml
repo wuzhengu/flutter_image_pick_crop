@@ -2,6 +2,8 @@ name: image_pick_crop
 description: ''
 repository: 'https://github.com/wuzhengu/flutter_image_pick_crop'
 
+publish_to: 'none'
+
 version: 1.0.1
 
 environment:
@@ -18,6 +20,11 @@ dependencies:
 
   flutter_native_image: '>=0.0.1 <=999.0.0'
 
+  agu_dart:
+    git:
+      url: git@github.com:wuzhengu/agu_dart
+      ref: flutter
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -26,6 +33,3 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-
-  assets:
-    - lang/

@@ -33,6 +33,8 @@ Future<String?> pickImage(
   double ratio = 0,
   double resolution = 0,
 }) async {
+  setupLocalization(Localizations.maybeLocaleOf(context));
+
   ImageSource? source;
   if (picker == 1) {
     source = ImageSource.gallery;
@@ -95,6 +97,8 @@ Future<String?> cropImage(
   double resolution = 0,
 }) async {
   if (path == null) return null;
+
+  setupLocalization(Localizations.maybeLocaleOf(context));
 
   Rect? cropRect;
   Rect? scaleRect;

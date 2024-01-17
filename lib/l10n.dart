@@ -1,19 +1,16 @@
 import 'dart:ui';
 
-import 'package:flutter/foundation.dart';
+import 'package:agu_dart/localization.dart';
 
-Locale? l10nLocale;
-final Map<Locale?, Map<String, dynamic>> l10nMap = {};
+import 'dict/zh.dart';
 
-String l10n(String s, [Locale? locale]) {
-  locale ??= l10nLocale;
-  var lang = l10nMap[locale];
-  if (kDebugMode) print("l10n ${[locale, lang != null, s]}");
-  return lang?[s]?.toString() ?? s;
-}
+export 'package:agu_dart/localization.dart';
 
-var _l10n = l10n;
+var _setupCount = 0;
 
-extension L10nStringExt on String {
-  String l10n([Locale? locale]) => _l10n(this, locale);
+setupLocalization([Locale? locale]) {
+  if (locale != null) l10nLocale = locale.toString();
+
+  if (_setupCount++ > 0) return;
+  (l10nDict['zh'] ??= {}).addAll(dict_zh);
 }

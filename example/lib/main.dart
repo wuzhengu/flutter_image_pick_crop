@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:image_pick_crop/core.dart';
 import 'package:image_pick_crop/l10n.dart';
-import 'package:image_pick_crop/localizations.dart';
 import 'package:video_compress/video_compress.dart';
 
 main() {
@@ -14,7 +13,6 @@ main() {
     theme: ThemeData.light(),
     darkTheme: ThemeData.dark(),
     localizationsDelegates: const [
-      ImagePickCropLocalizationsDelegate(),
       GlobalWidgetsLocalizations.delegate,
       GlobalMaterialLocalizations.delegate,
       GlobalCupertinoLocalizations.delegate,
@@ -48,6 +46,8 @@ class HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    setupLocalization(Localizations.maybeLocaleOf(context));
+
     return Scaffold(
       body: SafeArea(
         child: ListView(
