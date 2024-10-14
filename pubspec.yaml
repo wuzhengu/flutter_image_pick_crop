@@ -4,7 +4,7 @@ repository: 'https://github.com/wuzhengu/flutter_image_pick_crop'
 
 publish_to: 'none'
 
-version: 1.0.1
+version: 1.0.2
 
 environment:
   sdk: '>=2.19.3 <4.0.0'
